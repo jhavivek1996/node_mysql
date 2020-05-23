@@ -1,5 +1,5 @@
 const pool = require("../../config/database");
-
+const fs = require('fs')
 module.exports={
     create:(data, callBack)=>{
         // const ins =; 
@@ -70,5 +70,28 @@ module.exports={
         })
     },
 
+    storeinPdf:(data,callBack)=>{
+        pool.query("select id,firstName,gender,email,number from registration",
+        (error,results,fields)=>{
+            if(error){
+                return callBack(error);
+            }
+            return callBack(null,results)
+
+        });
+       
+    },
+
+    getUserByEmail:(email, callBack)=> {
+        pool.query(`select * from registration where email = ?`,[email],
+        (error,results,fields)=>{
+            if(error){
+                callBack("Error occured");
+            }
+            return callBack(null,results[0]);
+        }
+        );
+    }
+        
 
 }

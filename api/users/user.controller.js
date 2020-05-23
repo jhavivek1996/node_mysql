@@ -1,6 +1,7 @@
-const { create, show, updates, deletes } = require('./user.service');   
-const { genSaltSync, hashSync} = require("bcrypt");
-
+const { create, show, updates, deletes, storeinPdf, getUserByEmail } = require('./user.service');   
+const { genSaltSync, hashSync, compareSync} = require("bcrypt");
+const fs = require('fs');
+const { sign } = require('jsonwebtoken');
 
 var now = new Date();
 
@@ -81,5 +82,62 @@ module.exports = {
         })
         
     },
+    storeinPdfs:(req,res)=>{
+        const showQuery = req.query;
+       
+        storeinPdf(showQuery,(err,results)=>{
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    success:0,
+                    message: "Data Not Getting"
+                });
+            }
+           let finall = JSON.stringify(results);
+            fs.writeFileSync("dataStore.pdf",finall);
+            return res.status(200).json({
+                success:1,
+                data:results
+            })
+            
+            
+            
+            })
+        
+    },
+    login:(req,res)=>{
+        console.log("Controller Called");
+        const body = req.body;
+        console.log(body)
+        getUserByEmail(body.email,(err,results)=>{
+            if(err){
+                console.log(err);
+            }
+            if(!results){
+                return res.json({
+                    success:0,
+                    data: "Invalid email or password"
+                });
+            }
+            
+            const result = compareSync(body.password,results.password);
+            if(result){
+                results.password = undefined;
+                const jsontoken = sign({result:results},process.env.SECRET_KEY,{ expiresIn: "1h" });
+                return res.json({
+                    success:1,
+                    message:"Logged in successfully",
+                    token: jsontoken
+                    // data:results
+                });
+            }else{
+               return res.json({
+                success:0,
+                message: "Token is invalid"
+               })
+            }
+        });
+        
+    
+    },
 }
-
