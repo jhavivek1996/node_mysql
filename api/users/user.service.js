@@ -1,9 +1,9 @@
 const pool = require("../../config/database");
 const fs = require('fs')
 module.exports={
-    create:(data, callBack)=>{
+    create: async (data, callBack)=>{
         // const ins =; 
-        pool.query(`insert into registration(firstName, lastName, gender, email, password, number) values(?,?,?,?,?,?)`, [
+       await pool.query(`insert into registration(firstName, lastName, gender, email, password, number) values(?,?,?,?,?,?)`, [
             data.firstName,
             data.lastName,
             data.gender,
@@ -24,8 +24,8 @@ module.exports={
 
     },
 
-    show:(data,callBack)=>{
-        pool.query("select id,firstName,gender,email,number from registration",
+    show: async (data,callBack)=>{
+      await pool.query("select id,firstName,gender,email,number from registration",
         (error,results,fields)=>{
             if(error){
                 return callBack(error);
@@ -34,10 +34,20 @@ module.exports={
 
         })
     },
+    searchByname: async (data,callBack)=>{
+        await pool.query("select * from registration where firstName =?",[data.firstName],
+          (error,results,fields)=>{
+              if(error){
+                  return callBack(error);
+              }
+              return callBack(null,results)
+  
+          })
+      },
 
-    updates:(data, callBack)=>{
+    updates: async (data, callBack)=>{
         // const ins =; 
-        pool.query(`UPDATE registration SET firstName=?, lastName=?, gender=?, number=? WHERE id = ?`, 
+       await pool.query(`UPDATE registration SET firstName=?, lastName=?, gender=?, number=? WHERE id = ?`, 
         [
             data.first_name,
             data.last_name,
@@ -58,9 +68,9 @@ module.exports={
 
     },
 
-    deletes:(data,callBack)=>{
+    deletes: async (data,callBack)=>{
 
-        pool.query("delete from registration where id =?", data.id,
+      await  pool.query("delete from registration where id =?", data.id,
         (error,results,fields)=>{
             if(error){
                 return callBack(error);
@@ -70,8 +80,8 @@ module.exports={
         })
     },
 
-    storeinPdf:(data,callBack)=>{
-        pool.query("select id,firstName,gender,email,number from registration",
+    storeinPdf: async (data,callBack)=>{
+       await pool.query("select id,firstName,gender,email,number from registration",
         (error,results,fields)=>{
             if(error){
                 return callBack(error);
@@ -82,8 +92,8 @@ module.exports={
        
     },
 
-    getUserByEmail:(email, callBack)=> {
-        pool.query(`select * from registration where email = ?`,[email],
+    getUserByEmail: async (email, callBack)=> {
+        await pool.query(`select * from registration where email = ?`,[email],
         (error,results,fields)=>{
             if(error){
                 callBack("Error occured");

@@ -7,11 +7,11 @@ var now = new Date();
 
 module.exports = {
 
-    createUser:(req,res)=>{
+    createUser: async (req,res)=>{
         const body = req.body;
         const salt = genSaltSync(10);
         body.password = hashSync(body.password, salt);
-        create(body,(err,results)=>{
+        await create(body,(err,results)=>{
             if(err){
                 console.log(err);
                 return res.status(500).json({
@@ -26,10 +26,28 @@ module.exports = {
         })
     },
 
-    showUser:(req,res)=>{
+    showUser: async(req,res)=>{
         const showQuery = req.query;
         console.log( Date.now());
-        show(showQuery,(err,results)=>{
+        await show(showQuery,(err,results)=>{
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    success:0,
+                    message: "Data Not Getting"
+                });
+            }
+            return res.status(200).json({
+                success:1,
+                data:results
+            })
+        })
+        
+    },
+    searchByname: async(req,res)=>{
+        const body = req.body;
+        console.log( Date.now());
+        await show(body,(err,results)=>{
             if(err){
                 console.log(err);
                 return res.status(500).json({
@@ -45,12 +63,12 @@ module.exports = {
         
     },
 
-    updateUser:(req,res)=>{
+    updateUser: async(req,res)=>{
         const updateData = req.body;      
         console.log(updateData)
         const salt = genSaltSync(10);
         updateData.password = hashSync(updateData.password, salt);
-        updates(updateData,(err,results)=>{
+        await updates(updateData,(err,results)=>{
             if(err){
                 console.log(err);
                 return res.status(500).json({
@@ -65,9 +83,9 @@ module.exports = {
 
         })
     },
-   deleteUser:(req,res)=>{
+   deleteUser: async(req,res)=>{
         const deleteQuery = req.body;
-        deletes(deleteQuery,(err,results)=>{
+        await deletes(deleteQuery,(err,results)=>{
             if(err){
                 console.log(err);
                 return res.status(500).json({
@@ -82,10 +100,10 @@ module.exports = {
         })
         
     },
-    storeinPdfs:(req,res)=>{
+    storeinPdfs: async(req,res)=>{
         const showQuery = req.query;
        
-        storeinPdf(showQuery,(err,results)=>{
+        await storeinPdf(showQuery,(err,results)=>{
             if(err){
                 console.log(err);
                 return res.status(500).json({
@@ -105,11 +123,11 @@ module.exports = {
             })
         
     },
-    login:(req,res)=>{
+    login: async(req,res)=>{
         console.log("Controller Called");
         const body = req.body;
         console.log(body)
-        getUserByEmail(body.email,(err,results)=>{
+        await getUserByEmail(body.email,(err,results)=>{
             if(err){
                 console.log(err);
             }
@@ -137,6 +155,7 @@ module.exports = {
                })
             }
         });
+        
         
     
     },
