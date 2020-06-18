@@ -37,10 +37,7 @@ module.exports = {
                     message: "Data Not Getting"
                 });
             }
-            return res.status(200).json({
-                success:1,
-                data:results
-            })
+            return res.json({success:1,results})
         })
         
     },
@@ -66,7 +63,9 @@ module.exports = {
         })
     },
    deleteUser:(req,res)=>{
-        const deleteQuery = req.body;
+        const deleteQuery = req.params.id;
+        console.log(" I am delete controller ")
+
         deletes(deleteQuery,(err,results)=>{
             if(err){
                 console.log(err);
@@ -75,11 +74,12 @@ module.exports = {
                     message: "Data Not Deleted"
                 });
             }
-            return res.status(200).json({
+            return res.json({
                 success:1,
-                data:results
-            })
-        })
+                message: "User Deleted Successfully",
+                id: " I am id no "+req.params.id
+            });
+        });
         
     },
     storeinPdfs:(req,res)=>{

@@ -58,9 +58,9 @@ module.exports={
 
     },
 
-    deletes:(data,callBack)=>{
+    deletes:(data,callBack,req)=>{
 
-        pool.query("delete from registration where id =?", data.id,
+        pool.query("DELETE FROM registration WHERE id =?", data,
         (error,results,fields)=>{
             if(error){
                 return callBack(error);
