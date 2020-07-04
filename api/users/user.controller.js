@@ -1,4 +1,4 @@
-const { create, show, updates, deletes, storeinPdf, getUserByEmail,resetPassword } = require('./user.service');   
+const { create, show, updates, deletes, storeinPdf, getUserByEmail,editPassword } = require('./user.service');   
 const { genSaltSync, hashSync, compareSync} = require("bcrypt");
 const fs = require('fs');
 const { sign } = require('jsonwebtoken');
@@ -166,14 +166,14 @@ module.exports = {
         
     
     },
-    resetPassword: async(req,res)=>{
+    editPassword: async(req,res)=>{
         console.log(" Reset Cotroller Called=============> ");
          const body = req.body;
          const salt = genSaltSync(10);
          body.password = hashSync(body.password, salt);
          console.log(body);
          try{
-            resetPassword(body.email,body.oldPassword,body.password,(err,results)=>{
+            editPassword(body.email,body.oldPassword,body.password,(err,results)=>{
                 if(err){
                     console.log(err);
                 }

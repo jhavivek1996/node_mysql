@@ -118,7 +118,7 @@ module.exports={
         }
     },
 
-    resetPassword: async(data,email, oldPassword, newPassword,confirmPassword, callBack)=>{
+    editPassword: async(data,email, oldPassword, newPassword,confirmPassword, callBack)=>{
        
        try{
         await pool.query(`select password from registration where password=?`,[oldPassword],
